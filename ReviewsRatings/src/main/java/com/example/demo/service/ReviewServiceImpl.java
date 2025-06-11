@@ -72,9 +72,9 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Override
     public UserReviewResponseDTO getReview(int reviewId) throws ReviewNotFound {
-    	 log.info("In ReviewServiceImpl get Review method ....");
+    	 log.info("In ReviewServiceImpl get Review method ....:{}",reviewId);
         Optional<Review> optionalReview = repository.findById(reviewId);
-
+        log.info("In ReviewServiceImpl get optionalReview  ....:{}",optionalReview);
         if (optionalReview.isEmpty()) {
             throw new ReviewNotFound("Review not found for ID: " + reviewId);
         }
@@ -82,9 +82,11 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = optionalReview.get();
         int packageId = review.getPackageId();
         int userNo = review.getUserId();
-        User user = userClient.getUserId(userNo);
+        System.out.println(userNo);
+        User user = userClient.getUser(userNo);
+        
         Pack pack = packClient.getPackId(packageId);
-
+        log.info("UserId:",user.getUserId());
         return new UserReviewResponseDTO(user, review, pack);
     }
 

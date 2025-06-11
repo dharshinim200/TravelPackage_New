@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -8,11 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.NotificationRequest;
 import com.example.demo.dto.Pack;
 import com.example.demo.dto.User;
 import com.example.demo.dto.UserBookResponseDTO;
 import com.example.demo.exception.BookingNotFound;
 import com.example.demo.exception.PackageNotFound;
+import com.example.demo.feignclient.NotificationClient;
 import com.example.demo.feignclient.PackClient;
 import com.example.demo.feignclient.PayClient;
 import com.example.demo.feignclient.UserClient;
@@ -34,6 +38,10 @@ public class BookingServiceImpl implements BookingService {
     PackClient packClient;
     @Autowired
     PayClient payClient;
+    @Autowired
+    private NotificationClient notificationClient;
+
+
 
     /**
      * Saves a new booking to the database.
@@ -41,51 +49,47 @@ public class BookingServiceImpl implements BookingService {
      * @param booking Booking object to be saved.
      * @return Success message or error message if package validation fails.
      */
-//    @Override
-//    public String saveBooking(Booking booking) {
-//        
-//        log.info("In BookingServiceImpl saveBooking method ....");
-//           try {
-//                Pack pack = packClient.checkPackage(booking.getPackageId());
-//
-//                if (pack == null) {
-//                    return "Invalid Package";
-//                }
-//                booking.setStatus("NOT_PAID");
-//                
-//                  repository.save(booking);
-//               
-//                    return "Successfully saved and waiting for payment process";
-//                
-//
-//            } catch (Exception e) {
-//                return "Package service not found";
-//            }
-//    }
+
     
     @Override
-    public String saveBooking(Booking booking) {
-       
-        log.info("In BookingServiceImpl saveBooking method ....");
+    public Booking saveBooking(Booking booking) {
+        log.info("In BookingServiceImpl saveBooking method...");
+
         try {
-                Pack pack = packClient.checkPackage(booking.getPackageId());
+            Pack pack = packClient.checkPackage(booking.getPackageId());
 
-                if (pack == null) {
-                    return "Invalid Package";
-                }
-                  booking.setStatus("NOT_PAID");
-                    repository.save(booking);
-
-                    packClient.decreaseAvailability(booking.getPackageId());
-               
-                    return "Successfully saved and waiting for payment process";
-        }
-        catch (Exception e) {
-          return "Package service not found";
-      }
+            if (pack.getAvailability() > 0) {
+                booking.setStatus("NOT_PAID");
+                packClient.decreaseAvailability(booking.getPackageId());
                 
 
+                Booking savedBooking = repository.save(booking);
+                //notify
+//                log.info("In BookingServiceImpl saveBooking method...",savedBooking);
+//
+//                // ✅ Step 1: Fetch user details
+//                User user = userClient.getUserId(booking.getUserId());
+//
+//                // ✅ Step 2: Send confirmation email
+//                String subject = "Booking Confirmation - EasyTrips";
+//                String message = "Hi " + user.getName() + ",\n\n" +
+//                        "Your booking (ID: " + savedBooking.getBookingId() + ") has been successfully created.\n" +
+//                        "Package ID: " + booking.getPackageId() + "\n" +
+//                        "Start: " + booking.getStartDate() + "\nEnd: " + booking.getEndDate() + "\n" +
+//                        "Status: " + booking.getStatus() + "\n\n" +
+//                        "Thank you for choosing EasyTrips!";
+//                notificationClient.sendEmail(user.getEmail(), subject, message); //notify
+
+                return savedBooking;
+            }
+
+        } catch (Exception e) {
+            log.error("Error during booking creation", e);
+        }
+
+        return null;
     }
+
 
     /**
      * Updates the status of a booking.
@@ -133,8 +137,23 @@ public class BookingServiceImpl implements BookingService {
             Booking booking = bookingOpt.get();
             
             int packageId=bookingOpt.get().getPackageId();
-            // Delete booking
+            String bookingStatus = booking.getStatus();
+//            notify
+        //    User user = userClient.getUserId(booking.getUserId());
+
+            // ✅ Step 2: Send confirmation email
+//            String subject = "Booking Deletion - EasyTrips";
+//            String message = "Hi " + user.getName() + ",\n\n" +
+//                    "Your booking (ID: " + booking.getBookingId() + ") has been successfully deleted.\n" +
+//                    "Package ID: " + booking.getPackageId() + "\n" +
+//                    "Start: " + booking.getStartDate() + "\nEnd: " + booking.getEndDate() + "\n" +
+//                   "Thank you for choosing EasyTrips!";
+//            notificationClient.sendEmail(user.getEmail(), subject, message);
+//
+//           log.info("In BookingServiceImpl delete booking method ....",subject);
+             //Delete booking
             repository.deleteById(bookingId);
+            
 
             // Increase availability in TravelPackage Service
             packClient.increaseAvailability(packageId);
@@ -143,8 +162,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
     
-    
-    
+
 
     /**
      * Retrieves booking details along with associated user and package details.
@@ -184,6 +202,45 @@ public class BookingServiceImpl implements BookingService {
 
         return repository.findAll();
     }
+    
+    @Override
+    public List<UserBookResponseDTO> getBookingsByUserId(int userId) throws PackageNotFound {
+        log.info("In BookingServiceImpl - fetching bookings by userId: {}", userId);
+
+        List<Booking> bookings = repository.findByUserId(userId);
+        List<UserBookResponseDTO> result = new ArrayList<>();
+
+        User user = userClient.getUserId(userId); // Fetch once for all
+       
+        for (Booking booking : bookings) {
+            Pack pack = packClient.getPackId(booking.getPackageId());
+            result.add(new UserBookResponseDTO(user, booking, pack));
+        }
+
+        return result;
+    }
+    
+    public List<UserBookResponseDTO> getBookingsByName(String name) throws PackageNotFound {
+        log.info("Fetching bookings by username: {}", name);
+
+        User user = userClient.getBookingsByName(name);
+        if (user == null) {
+            throw new PackageNotFound("User not found for username: " + name);
+        }
+
+        int userId = user.getUserId();
+        List<Booking> bookings = repository.findByUserId(userId);
+
+        List<UserBookResponseDTO> result = new ArrayList<>();
+        for (Booking booking : bookings) {
+            Pack pack = packClient.getPackId(booking.getPackageId());
+            result.add(new UserBookResponseDTO(user, booking, pack));
+        }
+
+        return result;
+    }
+
+
 
 
 

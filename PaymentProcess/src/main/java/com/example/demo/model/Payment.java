@@ -2,6 +2,8 @@ package com.example.demo.model;
 
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
@@ -18,6 +20,7 @@ import lombok.NoArgsConstructor;
 public class Payment {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int paymentId;
 	private int userId;
 	private int bookingId;

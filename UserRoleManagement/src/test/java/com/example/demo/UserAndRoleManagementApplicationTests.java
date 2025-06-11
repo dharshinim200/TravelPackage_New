@@ -29,7 +29,7 @@ class UserAndRoleManagementApplicationTests {
 
 	@Test
 	void saveUserTest() {
-		User user = new User(113, "Ani", "Ani@gmail.com", "1234", "customer", "28342947");
+		User user = new User(113, "Ani", "Ani@gmail.com", "1234", "customer");
 		Mockito.when(repository.save(user)).thenReturn(user);
 		String response = service.saveUser(user);
 		assertEquals("successfully saved", response);
@@ -37,7 +37,7 @@ class UserAndRoleManagementApplicationTests {
 
 	@Test
 	void updateUserTest() {
-		User user = new User(113, "Ani", "Ani@gmail.com", "1234", "customer", "28342947");
+		User user = new User(113, "Ani", "Ani@gmail.com", "1234", "customer");
 		Mockito.when(repository.save(user)).thenReturn(user);
 		User updatedUser = service.updateUser(user);
 		assertEquals(user, updatedUser);
@@ -53,8 +53,8 @@ class UserAndRoleManagementApplicationTests {
 
 	@Test
 	void getAllUserTest() {
-		List<User> mockUsers = Arrays.asList(new User(113, "Alice", "Ani@gmail.com", "1234", "customer", "28342947"),
-				new User(113, "Bob", "Ani@gmail.com", "1234", "customer", "28342947"));
+		List<User> mockUsers = Arrays.asList(new User(113, "Alice", "Ani@gmail.com", "1234", "customer"),
+				new User(113, "Bob", "Ani@gmail.com", "1234", "customer"));
 
 		Mockito.when(repository.findAll()).thenReturn(mockUsers);
 
@@ -69,7 +69,7 @@ class UserAndRoleManagementApplicationTests {
 	@Test
     void getUserSuccessTest() throws UserRoleNotFound {
 		int userId = 113;
-		User mockUser = new User(113, "Alice", "Alice@gmail.com", "1234", "customer", "28342947");
+		User mockUser = new User(113, "Alice", "Alice@gmail.com", "1234", "customer");
 
 		Mockito.when(repository.findById(userId)).thenReturn(Optional.of(mockUser));
 

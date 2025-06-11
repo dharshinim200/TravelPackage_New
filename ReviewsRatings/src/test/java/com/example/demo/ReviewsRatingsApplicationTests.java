@@ -85,7 +85,7 @@ class ReviewsRatingsApplicationTests {
 		Pack mockPack = new Pack(201, "Holiday Package", "Luxury", 5, 500, "Includes Meals");
 
 		Mockito.when(repository.findById(reviewId)).thenReturn(Optional.of(mockReview));
-		Mockito.when(userClient.getUserId(101)).thenReturn(mockUser);
+		Mockito.when(userClient.getUser(101)).thenReturn(mockUser);
 		Mockito.when(packClient.getPackId(201)).thenReturn(mockPack);
 
 		UserReviewResponseDTO result = service.getReview(reviewId);

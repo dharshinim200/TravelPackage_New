@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
@@ -23,8 +25,9 @@ import lombok.NoArgsConstructor;
 public class Review {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int reviewId;
-	private int userId;
+	private int userId;	
 	private int packageId;
 	@Min(value = 1, message = "Rating must be at least 1")
 	@Max(value = 5, message = "Rating must not exceed 5")

@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import java.util.List;
 
-
+//import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import com.example.demo.dto.PackBookResponseDTO;
 import com.example.demo.dto.UserBookResponseDTO;
 import com.example.demo.exception.BookingNotFound;
@@ -35,7 +36,7 @@ public class BookingController {
      * @throws PackageNotFound If the package associated with the booking is not found.
      */
     @PostMapping("/save")
-    public String saveBooking(@RequestBody Booking booking) throws PackageNotFound {
+    public Booking saveBooking(@RequestBody Booking booking) throws PackageNotFound {
         return service.saveBooking(booking);
     }
 
@@ -55,10 +56,7 @@ public class BookingController {
      * @return Success message confirming deletion.
      * @throws BookingNotFound 
      */
-//    @DeleteMapping("/deleteById/{did}")
-//    public String removeBooking(@PathVariable("did") int bookingId) {
-//        return service.removeBooking(bookingId);
-//    }
+
     
     @DeleteMapping("/deleteById/{did}")
     public String deleteBooking(@PathVariable("did") int bookingId) throws BookingNotFound {
@@ -96,4 +94,20 @@ public class BookingController {
     public List<Booking> getAllBooking() {
         return service.getAllBooking();
     }
+    
+    @GetMapping("/fetchByUserId/{userId}")
+    public List<UserBookResponseDTO> getBookingsByUser(@PathVariable("userId") int userId) throws PackageNotFound {
+        return service.getBookingsByUserId(userId);
+    }
+    
+    @GetMapping("/fetchByName/{name}")
+    public ResponseEntity<List<UserBookResponseDTO>> getBookingsByName(@PathVariable String name) {
+        try {
+            List<UserBookResponseDTO> bookings = service.getBookingsByName(name);
+            return new ResponseEntity<>(bookings, HttpStatus.OK);
+        } catch (PackageNotFound e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

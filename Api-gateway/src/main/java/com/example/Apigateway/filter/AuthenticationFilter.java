@@ -59,13 +59,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 	}
 
 	private boolean isAuthorized(String role, String path, String method) {
-		if ("ADMIN".equalsIgnoreCase(role)) {
+		if ("ADMIN".equalsIgnoreCase(role)||"admin".equalsIgnoreCase(role)) {
 			return path.startsWith("/user")
 					|| (path.startsWith("/payment") && !method.equalsIgnoreCase("PUT")
 							&& !method.equalsIgnoreCase("DELETE") && !method.equalsIgnoreCase("POST"))
 					|| path.startsWith("/package") || path.startsWith("/review") || (path.startsWith("/booking")
 							&& !method.equalsIgnoreCase("POST") && !method.equalsIgnoreCase("POST"));
-		} else if ("USER".equalsIgnoreCase(role)) {
+		} else if ("USER".equalsIgnoreCase(role)||"user".equalsIgnoreCase(role)) {
 			return (path.startsWith("/user") && !path.startsWith("/user/fetchAll"))
 
 					|| ((path.startsWith("/payment") && !path.startsWith("/payment/fetchAll"))

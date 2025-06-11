@@ -17,4 +17,6 @@ public interface UserService {
 
 	public abstract List<User> getAllUser();
 	
+	public abstract User getUserByName(String name) ;
+	
 }

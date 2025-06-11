@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
@@ -17,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(name="package_info")
 public class Pack {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int packageId;
     @NotBlank(message = "Title cannot be empty")
 	private String title;

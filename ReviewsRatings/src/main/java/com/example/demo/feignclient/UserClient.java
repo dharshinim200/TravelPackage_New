@@ -13,5 +13,5 @@ public interface UserClient {
 
 	
 	@GetMapping("/fetchById/{did}")
-	public User getUserId(@PathVariable("did") int userId);
+	public User getUser(@PathVariable("did") int userId);
 }

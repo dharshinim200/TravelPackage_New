@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,10 +19,12 @@ import com.example.demo.dto.UserReviewResponseDTO;
 import com.example.demo.exception.ReviewNotFound;
 import com.example.demo.model.Review;
 import com.example.demo.service.ReviewService;
+import com.example.demo.service.ReviewServiceImpl;
 
 @RestController
 @RequestMapping("/review")
 public class ReviewController {
+	Logger log=LoggerFactory.getLogger(ReviewServiceImpl.class);
 	
 	@Autowired
 	ReviewService service;
@@ -42,6 +46,7 @@ public class ReviewController {
 
 	@GetMapping("/fetchById/{fid}")
 	public UserReviewResponseDTO getReview(@PathVariable("fid") int reviewId) throws ReviewNotFound {
+		log.info("In controller get Review method ....:{}",reviewId);
 		return service.getReview(reviewId);
 	}
 	

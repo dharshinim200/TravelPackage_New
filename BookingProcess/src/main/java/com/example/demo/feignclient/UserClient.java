@@ -17,4 +17,7 @@ public interface UserClient {
 	
 	@GetMapping("/fetchById/{did}")
 	public User getUserId(@PathVariable("did") int userId);
+	
+	@GetMapping("/fetchByName/{name}")
+	public User getBookingsByName(@PathVariable("name") String username);
 }

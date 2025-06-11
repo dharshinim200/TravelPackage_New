@@ -13,7 +13,7 @@ public interface BookingService {
     
 	// Declaration of the methods in booking 
 	
-	public abstract String saveBooking(Booking booking) throws PackageNotFound;
+	public abstract Booking saveBooking(Booking booking) throws PackageNotFound;
 
 	public abstract Booking updateBooking(Booking booking);
 
@@ -22,6 +22,10 @@ public interface BookingService {
 	public abstract UserBookResponseDTO getBooking(int bookingId) throws PackageNotFound;
 
 	public abstract List<Booking> getAllBooking();
+	
+	 public abstract List<UserBookResponseDTO> getBookingsByUserId(int userId) throws PackageNotFound;
+   
+	 public abstract List<UserBookResponseDTO> getBookingsByName(String name)throws PackageNotFound ;
 
 	public abstract String updateBookingStatus(int bookingId, String status);
 

@@ -2,8 +2,9 @@ package com.example.demo.controller;
 
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,6 +49,11 @@ public class UserController {
 	@GetMapping("/fetchAll")
 	public List<User> getAllUser() {
 		return service.getAllUser();
+	}
+	@GetMapping("/fetchByName/{name}")
+	public User getUserByName(@PathVariable("name") String name) {
+		System.out.println("Name :"+name);
+		return service.getUserByName(name);
 	}
 
 }

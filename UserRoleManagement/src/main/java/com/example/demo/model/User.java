@@ -2,6 +2,8 @@ package com.example.demo.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -18,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "user_info")
 public class User {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userId;
 	@Size(min = 3, message = "Name should have at least 3 characters")
 	private String name;
@@ -29,8 +32,6 @@ public class User {
 	@Size(min = 4, message = "Password must be at least 4 characters")
 	private String password;
 	@NotBlank(message = "Role cannot be empty")
-	private String role;
+	private String roles;
 
-	@Column(name = "contact")
-	private String contactNumber;
 }
