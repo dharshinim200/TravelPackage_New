@@ -24,7 +24,7 @@ public class User {
 	private int userId;
 	@Size(min = 3, message = "Name should have at least 3 characters")
 	private String name;
-	
+
 	@NotBlank(message = "Email cannot be empty")
 	@Email(message = "Invalid email format")
 	private String email;

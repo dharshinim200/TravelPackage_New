@@ -32,7 +32,7 @@ class UserAndRoleManagementApplicationTests {
 		User user = new User(113, "Ani", "Ani@gmail.com", "1234", "customer");
 		Mockito.when(repository.save(user)).thenReturn(user);
 		String response = service.saveUser(user);
-		assertEquals("successfully saved", response);
+		assertEquals("Successfully saved", response);
 	}
 
 	@Test
@@ -48,7 +48,7 @@ class UserAndRoleManagementApplicationTests {
 		int userId = 113;
 		Mockito.doNothing().when(repository).deleteById(userId);
 		String response = service.removeUser(userId);
-		assertEquals("deleted successfully", response);
+		assertEquals("Deleted successfully", response);
 	}
 
 	@Test

@@ -36,7 +36,7 @@ class TravelPackageManagementApplicationTests {
 		Pack pack = new Pack(30,"good", "high", "2", 200,5, "Nothing");
 		Mockito.when(repository.save(pack)).thenReturn(pack);
 		String response = service.savePack(pack);
-		assertEquals("successfully saved", response);
+		assertEquals("Successfully saved", response);
 	}
 	@Test
 	void updatePackTest() {

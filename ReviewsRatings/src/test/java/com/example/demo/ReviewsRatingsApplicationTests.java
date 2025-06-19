@@ -40,10 +40,10 @@ class ReviewsRatingsApplicationTests {
 
 	@Test
 	void saveReviewTest() {
-		Review review = new Review(110, 123, 23, 5, "good", LocalDateTime.of(2025, 5, 8, 10, 30));
+		Review review = new Review(3, 123, 23, 5, "good", LocalDateTime.of(2025, 5, 8, 10, 30));
 		Mockito.when(repository.save(review)).thenReturn(review);
 		String response = service.saveReview(review);
-		assertEquals("successfully saved", response);
+		assertEquals("Successfully saved", response);
 	}
 
 	@Test
@@ -56,10 +56,10 @@ class ReviewsRatingsApplicationTests {
 
 	@Test
 	void removeReviewTest() {
-		int removeId = 110;
+		int removeId = 3;
 		Mockito.doNothing().when(repository).deleteById(removeId);
 		String response = service.removeReview(removeId);
-		assertEquals("deleted successfully", response);
+		assertEquals("Deleted successfully", response);
 	}
 
 	@Test
